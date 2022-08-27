@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+    app:
+        build:
+            args:
+                user: clonera
+                uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        image: inertia
+        container_name: inertia-app
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+        networks:
+            - inertia
+
+
+    nginx:
+        image: nginx:alpine
+        container_name: inertia-nginx
+        restart: unless-stopped
+        ports:
+            - 8053:80
+        volumes:
+            - ./:/var/www
+            - ./docker-compose/nginx:/etc/nginx/conf.d/
+        networks:
+            - inertia
+
+
+networks:
+    inertia:
+        driver: bridge
